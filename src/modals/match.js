@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
-  job: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Job',
+  type: {
+    type: String,
   },
-  user: {
+
+  talent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Talent',
+  },
+
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company',
   },
 });
 

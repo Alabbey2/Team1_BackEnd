@@ -8,6 +8,7 @@ const jobsRouter = require('./routes/jobsRouter');
 const talentsRouter = require('./routes/talentsRouter');
 const companiesRouter = require('./routes/companiesRouter');
 const loginRouter = require('./routes/loginRouter');
+const matchesRouter = require('./routes/matchesRouter');
 
 app.use(cors());
 app.use(express.json());
@@ -29,5 +30,6 @@ app.use('/api/jobs', jobsRouter);
 app.use('/api/talents', talentsRouter);
 app.use('/api/companies', companiesRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/matches', matchesRouter);
 
 module.exports = app;

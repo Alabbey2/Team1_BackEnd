@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const jobSchema = new mongoose.Schema({
   company: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Company',
   },
 
   title: {
@@ -11,10 +11,12 @@ const jobSchema = new mongoose.Schema({
     required: 'Job title is required',
   },
 
-  type: {
-    type: String,
-    required: 'Job type is required',
-  },
+  type: [
+    {
+      type: String,
+      required: 'Job type is required',
+    },
+  ],
 
   level: {
     type: String,

@@ -38,8 +38,7 @@ const loginUser = async (req, res) => {
 
       const userInfo = {
         email,
-        firstName: userTalent.firstName,
-        lastName: userTalent.lastName,
+        name: userTalent.firstName,
         photo: userTalent.photo,
         userId: userTalent.id,
         userType: userTalent.userType,

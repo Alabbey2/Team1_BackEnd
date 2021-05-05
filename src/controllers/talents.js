@@ -28,11 +28,12 @@ const registerTalent = async (req, res) => {
         linkedin: '',
         about: '',
         level: '',
-        type: '',
+        type: [],
         techs: [],
         photo: '',
         likes: [],
         superLikes: [],
+        matches: [],
       };
       const savedUser = await new Talent(newUser).save();
       res.json(savedUser);
@@ -95,10 +96,12 @@ const updateTalent = async (req, res) => {
         linkedin: linkedin ? linkedin : user.linkedin,
         about: about ? about : user.about,
         level: level ? level : user.level,
-        type: type ? type : user.type,
-        techs: techs ? techs : user.techs,
+        type: type.length > 0 ? type : user.type,
+        techs: techs.length > 0 ? techs : user.techs,
         photo: photo ? photo : user.photo,
       };
+
+      console.log('upd--', updates);
 
       await Talent.findByIdAndUpdate(userId, updates, { new: true })
         .then((result) => {
@@ -133,10 +136,58 @@ const deleteTalent = async (req, res) => {
   }
 };
 
+const like = async (req, res) => {
+  try {
+    const { userId, jobId } = req.body;
+    const talent = await Talent.findOne({ _id: userId });
+    if (talent) {
+      await Talent.findOneAndUpdate(
+        { _id: userId },
+        { $push: { likes: jobId } },
+        { upsert: true }
+      )
+        .then((result) => {
+          console.log(result);
+          res.json({ Message: 'Like recorded to the user' });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const superlike = async (req, res) => {
+  try {
+    const { userId, jobId } = req.body;
+    const talent = await Talent.findOne({ _id: userId });
+    if (talent) {
+      await Talent.findOneAndUpdate(
+        { _id: userId },
+        { $push: { superLikes: jobId } },
+        { upsert: true }
+      )
+        .then((result) => {
+          console.log(result);
+          res.json({ Message: 'Superlike recorded to the user' });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   registerTalent,
   getTalents,
   getOneTalent,
   updateTalent,
   deleteTalent,
+  like,
+  superlike,
 };

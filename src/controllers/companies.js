@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
 
 const Company = require('../modals/company');
+const talent = require('../modals/talent');
 const { SECRET } = require('../utils/config');
 
 const registerCompany = async (req, res) => {
@@ -22,6 +23,7 @@ const registerCompany = async (req, res) => {
         location: '',
         website: '',
         about: '',
+        techs: [],
         logo: '',
         likes: [],
         superLikes: [],
@@ -58,12 +60,13 @@ const updateCompany = async (req, res) => {
     const { userId } = req.params;
     const user = await Company.findOne({ _id: userId });
     if (user) {
-      const { name, location, website, about, logo } = req.body;
+      const { name, location, website, about, logo, techs } = req.body;
       const updates = {
         name: name ? name : user.name,
         location: location ? location : user.location,
         website: website ? website : user.website,
         about: about ? about : user.about,
+        techs: techs.length > 0 ? techs : user.techs,
         logo: logo ? logo : user.logo,
       };
 
@@ -98,10 +101,58 @@ const deleteCompany = async (req, res) => {
   }
 };
 
+const like = async (req, res) => {
+  try {
+    const { userId, talentId } = req.body;
+    const company = await Company.findOne({ _id: userId });
+    if (company) {
+      await Company.findOneAndUpdate(
+        { _id: userId },
+        { $push: { likes: talentId } },
+        { upsert: true }
+      )
+        .then((result) => {
+          console.log(result);
+          res.json({ Message: 'Liked Talent' });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const superlike = async (req, res) => {
+  try {
+    const { userId, talentId } = req.body;
+    const company = await Company.findOne({ _id: userId });
+    if (company) {
+      await Company.findOneAndUpdate(
+        { _id: userId },
+        { $push: { superLikes: talentId } },
+        { upsert: true }
+      )
+        .then((result) => {
+          console.log(result);
+          res.json({ Message: 'Superliked Talent' });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   registerCompany,
   getCompanies,
   getOneCompany,
   updateCompany,
   deleteCompany,
+  like,
+  superlike,
 };
