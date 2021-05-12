@@ -8,6 +8,20 @@ const { SECRET } = require('../utils/config');
 const registerCompany = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    if (password.length < 4) {
+      throw new Error('Password should be at least 4 characters long');
+    }
+
+    const validateEmail = (mailaddr) => {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(mailaddr);
+    };
+
+    if (!validateEmail(email)) {
+      throw new Error('Wrong email format');
+    }
+
     const saltRounds = 10;
 
     const existingUser = await Company.findOne({ email: email });
@@ -32,7 +46,7 @@ const registerCompany = async (req, res) => {
       res.json(savedUser);
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -41,7 +55,7 @@ const getCompanies = async (req, res) => {
     const users = await Company.find({});
     res.send(users);
   } catch (error) {
-    res.json({ Error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -49,9 +63,13 @@ const getOneCompany = async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await Company.findOne({ _id: userId });
-    res.send(user);
+    if (user) {
+      res.send(user);
+    } else {
+      throw new Error('Company not found');
+    }
   } catch (error) {
-    res.json({ Error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -82,7 +100,9 @@ const updateCompany = async (req, res) => {
     } else {
       throw new Error('No user found with the given ID');
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(400).json({ Error: error.message });
+  }
 };
 
 const deleteCompany = async (req, res) => {
@@ -97,7 +117,7 @@ const deleteCompany = async (req, res) => {
       throw new Error('User with given id not found!');
     }
   } catch (error) {
-    res.json({ Error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -120,7 +140,7 @@ const like = async (req, res) => {
         });
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -143,7 +163,7 @@ const superlike = async (req, res) => {
         });
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 

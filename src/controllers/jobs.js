@@ -15,9 +15,13 @@ const getOneJob = async (req, res, next) => {
   try {
     const newId = req.params.jobId;
     const job = await Job.findOne({ _id: newId });
-    res.send(job);
+    if (job) {
+      res.send(job);
+    } else {
+      throw new Error('Job not found');
+    }
   } catch (err) {
-    res.json({ Error: err.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -27,7 +31,7 @@ const getJobsByCompany = async (req, res) => {
     const jobs = await Job.find({ company: company });
     res.send(jobs);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -75,7 +79,7 @@ const createJob = async (req, res) => {
       res.send(savedJob);
     }
   } catch (err) {
-    res.json({ Error: err.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 const updateJob = async (req, res, next) => {
@@ -111,7 +115,7 @@ const updateJob = async (req, res, next) => {
       throw new Error(`Job ${jobId} not found`);
     }
   } catch (err) {
-    res.json({ Error: err.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
@@ -128,7 +132,7 @@ const deleteJob = async (req, res, next) => {
       throw new Error(`Job ${newId} not found`);
     }
   } catch (err) {
-    res.json({ Error: err.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 

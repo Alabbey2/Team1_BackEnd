@@ -20,7 +20,7 @@ const getAllMatches = async (req, res) => {
       throw new Error('Matches not found');
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(401).json({ Error: error.message });
   }
 };
 
@@ -66,7 +66,7 @@ const createMatch = async (req, res) => {
       throw new Error('Failed to create a match');
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(401).json({ Error: error.message });
   }
 };
 

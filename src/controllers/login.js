@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
       throw new Error('No user found with given Email');
     }
   } catch (error) {
-    res.status(401).json({ error: error.message });
+    res.status(400).json({ Error: error.message });
   }
 };
 
